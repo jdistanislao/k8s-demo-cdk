@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  creationTimestamp: "2026-01-21T17:25:31Z"
+  labels:
+    kubernetes.io/metadata.name: k8s-demo
+    name: k8s-demo
+  name: k8s-demo
+  resourceVersion: "14484"
+  uid: 151a3897-f779-4439-b1c8-f3b5ef38457e
+spec:
+  finalizers:
+  - kubernetes
+status:
+  phase: Active
