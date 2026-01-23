@@ -101,6 +101,13 @@ func createBackendDeployment(ctx *pulumi.Context, namespace *corev1.Namespace) (
 									Port: pulumi.String("http"),
 								},
 							},
+							Lifecycle: &corev1.LifecycleArgs{
+								PreStop: &corev1.LifecycleHandlerArgs{
+									Exec: &corev1.ExecActionArgs{
+										Command: pulumi.ToStringArray([]string{"sh", "-c", "sleep", "30"}),
+									},
+								},
+							},
 						},
 					},
 				},
@@ -207,6 +214,13 @@ func createApiDeployment(ctx *pulumi.Context, namespace *corev1.Namespace, backe
 								corev1.EnvVarArgs{
 									Name:  pulumi.String("DEMOK_BACKEND_SERVICE_PORT"),
 									Value: pulumi.String(strconv.Itoa(backendService.Port)),
+								},
+							},
+							Lifecycle: &corev1.LifecycleArgs{
+								PreStop: &corev1.LifecycleHandlerArgs{
+									Exec: &corev1.ExecActionArgs{
+										Command: pulumi.ToStringArray([]string{"sh", "-c", "sleep", "30"}),
+									},
 								},
 							},
 						},
