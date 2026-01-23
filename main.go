@@ -45,7 +45,7 @@ func createNamespace(ctx *pulumi.Context) (*corev1.Namespace, error) {
 
 func createBackendDeployment(ctx *pulumi.Context, namespace *corev1.Namespace) (*DeplymentInfo, error) {
 	appName := "k8s-demo-backend"
-	appVersion := "0.1"
+	appVersion := "latest"
 	appPort := 8080
 	image := appName + ":" + appVersion
 
@@ -91,13 +91,13 @@ func createBackendDeployment(ctx *pulumi.Context, namespace *corev1.Namespace) (
 							},
 							LivenessProbe: &corev1.ProbeArgs{
 								HttpGet: &corev1.HTTPGetActionArgs{
-									Path: pulumi.String("/live"),
+									Path: pulumi.String("/actuator/health/liveness"),
 									Port: pulumi.String("http"),
 								},
 							},
 							ReadinessProbe: &corev1.ProbeArgs{
 								HttpGet: &corev1.HTTPGetActionArgs{
-									Path: pulumi.String("/ready"),
+									Path: pulumi.String("/actuator/health/readiness"),
 									Port: pulumi.String("http"),
 								},
 							},
@@ -143,7 +143,7 @@ func createBackendService(ctx *pulumi.Context, deployment *DeplymentInfo) (*Serv
 
 func createApiDeployment(ctx *pulumi.Context, namespace *corev1.Namespace, backendService *ServiceInfo) (*DeplymentInfo, error) {
 	appName := "k8s-demo-api"
-	appVersion := "0.4"
+	appVersion := "latest"
 	appPort := 8080
 	image := appName + ":" + appVersion
 
@@ -189,13 +189,13 @@ func createApiDeployment(ctx *pulumi.Context, namespace *corev1.Namespace, backe
 							},
 							LivenessProbe: &corev1.ProbeArgs{
 								HttpGet: &corev1.HTTPGetActionArgs{
-									Path: pulumi.String("/live"),
+									Path: pulumi.String("/actuator/health/liveness"),
 									Port: pulumi.String("http"),
 								},
 							},
 							ReadinessProbe: &corev1.ProbeArgs{
 								HttpGet: &corev1.HTTPGetActionArgs{
-									Path: pulumi.String("/ready"),
+									Path: pulumi.String("/actuator/health/readiness"),
 									Port: pulumi.String("http"),
 								},
 							},
