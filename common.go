@@ -43,7 +43,7 @@ func createNamespace(ctx *pulumi.Context) (*corev1.Namespace, error) {
 }
 
 func createIngress(ctx *pulumi.Context, service *ServiceInfo, raftService *ServiceInfo) (*networkingv1.Ingress, error) {
-	name := service.Name
+	name := "k8s-demo-ingress"
 	ingressClass := "nginx"
 	hostName := "demok.cdk.here"
 
@@ -54,6 +54,8 @@ func createIngress(ctx *pulumi.Context, service *ServiceInfo, raftService *Servi
 			Namespace: service.Service.Metadata.Namespace(),
 			Annotations: pulumi.StringMap{
 				"kubernetes.io/ingress.class": pulumi.String(ingressClass),
+				"nginx.ingress.kubernetes.io/use-regex": pulumi.String("true"),
+				"nginx.ingress.kubernetes.io/rewrite-target": pulumi.String("/$2"),
 			},
 		},
 		Spec: &networkingv1.IngressSpecArgs{
@@ -64,20 +66,20 @@ func createIngress(ctx *pulumi.Context, service *ServiceInfo, raftService *Servi
 					Http: &networkingv1.HTTPIngressRuleValueArgs{
 						Paths: networkingv1.HTTPIngressPathArray{
 							&networkingv1.HTTPIngressPathArgs{
-								Path:     pulumi.String("/test"),
-								PathType: pulumi.String("Prefix"),
+								Path:     pulumi.String("/std(/|$)(.*)"),
+								PathType: pulumi.String("ImplementationSpecific"),
 								Backend: networkingv1.IngressBackendArgs{
 									Service: &networkingv1.IngressServiceBackendArgs{
-										Name: pulumi.String(name),
+										Name: pulumi.String(service.Name),
 										Port: &networkingv1.ServiceBackendPortArgs{
-											Number: pulumi.Int(service.Port),
+											Name: pulumi.String("http"),
 										},
 									},
 								},
 							},
 							&networkingv1.HTTPIngressPathArgs{
-								Path:     pulumi.String("/raft"),
-								PathType: pulumi.String("Prefix"),
+								Path:     pulumi.String("/raft-consensus(/|$)(.*)"),
+								PathType: pulumi.String("ImplementationSpecific"),
 								Backend: networkingv1.IngressBackendArgs{
 									Service: &networkingv1.IngressServiceBackendArgs{
 										Name: pulumi.String(raftService.Name),
@@ -88,8 +90,8 @@ func createIngress(ctx *pulumi.Context, service *ServiceInfo, raftService *Servi
 								},
 							},
 							&networkingv1.HTTPIngressPathArgs{
-								Path:     pulumi.String("/"),
-								PathType: pulumi.String("Prefix"),
+								Path:     pulumi.String("/raft(/|$)(.*)"),
+								PathType: pulumi.String("ImplementationSpecific"),
 								Backend: networkingv1.IngressBackendArgs{
 									Service: &networkingv1.IngressServiceBackendArgs{
 										Name: pulumi.String(raftService.Name),
