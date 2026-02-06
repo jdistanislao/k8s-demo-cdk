@@ -42,7 +42,8 @@ func createNamespace(ctx *pulumi.Context) (*corev1.Namespace, error) {
 	return namespace, nil
 }
 
-func createIngress(ctx *pulumi.Context, service *ServiceInfo, raftService *ServiceInfo) (*networkingv1.Ingress, error) {
+// func createIngress(ctx *pulumi.Context, service *ServiceInfo, raftService *ServiceInfo) (*networkingv1.Ingress, error) {
+func createIngress(ctx *pulumi.Context, service *ServiceInfo) (*networkingv1.Ingress, error) {
 	name := "k8s-demo-ingress"
 	ingressClass := "nginx"
 	hostName := "demok.cdk.here"
@@ -77,30 +78,30 @@ func createIngress(ctx *pulumi.Context, service *ServiceInfo, raftService *Servi
 									},
 								},
 							},
-							&networkingv1.HTTPIngressPathArgs{
-								Path:     pulumi.String("/raft-consensus(/|$)(.*)"),
-								PathType: pulumi.String("ImplementationSpecific"),
-								Backend: networkingv1.IngressBackendArgs{
-									Service: &networkingv1.IngressServiceBackendArgs{
-										Name: pulumi.String(raftService.Name),
-										Port: &networkingv1.ServiceBackendPortArgs{
-											Name: pulumi.String("raft"),
-										},
-									},
-								},
-							},
-							&networkingv1.HTTPIngressPathArgs{
-								Path:     pulumi.String("/raft(/|$)(.*)"),
-								PathType: pulumi.String("ImplementationSpecific"),
-								Backend: networkingv1.IngressBackendArgs{
-									Service: &networkingv1.IngressServiceBackendArgs{
-										Name: pulumi.String(raftService.Name),
-										Port: &networkingv1.ServiceBackendPortArgs{
-											Name: pulumi.String("http"),
-										},
-									},
-								},
-							},
+							// &networkingv1.HTTPIngressPathArgs{
+							// 	Path:     pulumi.String("/raft-consensus(/|$)(.*)"),
+							// 	PathType: pulumi.String("ImplementationSpecific"),
+							// 	Backend: networkingv1.IngressBackendArgs{
+							// 		Service: &networkingv1.IngressServiceBackendArgs{
+							// 			Name: pulumi.String(raftService.Name),
+							// 			Port: &networkingv1.ServiceBackendPortArgs{
+							// 				Name: pulumi.String("raft"),
+							// 			},
+							// 		},
+							// 	},
+							// },
+							// &networkingv1.HTTPIngressPathArgs{
+							// 	Path:     pulumi.String("/raft(/|$)(.*)"),
+							// 	PathType: pulumi.String("ImplementationSpecific"),
+							// 	Backend: networkingv1.IngressBackendArgs{
+							// 		Service: &networkingv1.IngressServiceBackendArgs{
+							// 			Name: pulumi.String(raftService.Name),
+							// 			Port: &networkingv1.ServiceBackendPortArgs{
+							// 				Name: pulumi.String("http"),
+							// 			},
+							// 		},
+							// 	},
+							// },
 						},
 					},
 				},

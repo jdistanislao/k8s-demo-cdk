@@ -45,35 +45,36 @@ func main() {
 		// RAFT
 		/////////////////////////////
 
-		raftHeadlessServiceName := "k8s-demo-raft-headless"
-		raftDeployment, err := createRaftDeployment(ctx, namespace, raftHeadlessServiceName)
-		if err != nil {
-			return err
-		}
+		// raftHeadlessServiceName := "k8s-demo-raft-headless"
+		// raftDeployment, err := createRaftDeployment(ctx, namespace, raftHeadlessServiceName)
+		// if err != nil {
+		// 	return err
+		// }
 
-		raftService, err := createRaftService(ctx, raftDeployment)
-		if err != nil {
-			return err
-		}
+		// raftService, err := createRaftService(ctx, raftDeployment)
+		// if err != nil {
+		// 	return err
+		// }
 
-		raftHeadlessService, err := createRaftHeadlessService(ctx, raftDeployment, raftHeadlessServiceName)
-		if err != nil {
-			return err
-		}
+		// raftHeadlessService, err := createRaftHeadlessService(ctx, raftDeployment, raftHeadlessServiceName)
+		// if err != nil {
+		// 	return err
+		// }
 
 		/////////////////////////////
 		// INGRESS
 		/////////////////////////////
 
-		ingress, err := createIngress(ctx, apiService, raftService)
+		// ingress, err := createIngress(ctx, apiService, raftService)
+		ingress, err := createIngress(ctx, apiService)
 		if err != nil {
 			return err
 		}
 
 		ctx.Export("namespace", namespace.Metadata.Name())
-		ctx.Export("raftDeployment", raftDeployment.Deployment.Metadata.Name())
-		ctx.Export("raftService", raftService.Service.Metadata.Name())
-		ctx.Export("raftHeadlessService", raftHeadlessService.Service.Metadata.Name())
+		// ctx.Export("raftDeployment", raftDeployment.Deployment.Metadata.Name())
+		// ctx.Export("raftService", raftService.Service.Metadata.Name())
+		// ctx.Export("raftHeadlessService", raftHeadlessService.Service.Metadata.Name())
 		ctx.Export("backendDeployment", backendDeployment.Deployment.Metadata.Name())
 		ctx.Export("backendService", backendService.Service.Metadata.Name())
 		ctx.Export("apiDeployment", apiDeployment.Deployment.Metadata.Name())
