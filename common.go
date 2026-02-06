@@ -54,8 +54,8 @@ func createIngress(ctx *pulumi.Context, service *ServiceInfo) (*networkingv1.Ing
 			Labels:    service.Service.Metadata.Labels(),
 			Namespace: service.Service.Metadata.Namespace(),
 			Annotations: pulumi.StringMap{
-				"kubernetes.io/ingress.class": pulumi.String(ingressClass),
-				"nginx.ingress.kubernetes.io/use-regex": pulumi.String("true"),
+				"kubernetes.io/ingress.class":                pulumi.String(ingressClass),
+				"nginx.ingress.kubernetes.io/use-regex":      pulumi.String("true"),
 				"nginx.ingress.kubernetes.io/rewrite-target": pulumi.String("/$2"),
 			},
 		},
