@@ -1,5 +1,9 @@
 mode: deployment
 
+image:
+  repository: otel/opentelemetry-collector
+  tag: 0.145.0
+
 ports:
   prometheus:
     enabled: true
@@ -30,7 +34,8 @@ config:
         insecure: true
     prometheus:
       endpoint: "0.0.0.0:8889"
-      resource_to_telemetry_conversion: true
+      resource_to_telemetry_conversion: 
+        enabled: true
   
   service:
     pipelines:
