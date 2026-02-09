@@ -32,6 +32,10 @@ config:
       endpoint: http://tempo:4317
       tls:
         insecure: true
+    otlp/loki:
+      endpoint: http://loki:9095
+      tls:
+        insecure: true
     prometheus:
       endpoint: "0.0.0.0:8889"
       resource_to_telemetry_conversion: 
@@ -46,6 +50,9 @@ config:
         receivers: [otlp]
         processors: [batch]
         exporters: [prometheus]
+      logs:
+        receivers: [otlp]
+        exporters: [otlp/loki]
 
 # This automatically tells the Prometheus Operator to scrape this pod
 serviceMonitor:
