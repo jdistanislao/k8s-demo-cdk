@@ -11,3 +11,7 @@ prometheus:
     
     # Optional: Set retention
     retention: 1d
+
+prometheus-node-exporter:
+  hostRootFsMount:
+    enabled: false
