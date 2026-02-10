@@ -4,43 +4,66 @@ services:
 
   otel-collector:
     image: otel/opentelemetry-collector-contrib:latest
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
     ports:
       - "4317:4317"
-    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+      - "4318:4318"
+      - "8889:8889"
     volumes:
-      - ./otel/otel-config.yaml:/etc/otelcol-contrib/config.yaml
+      - ./otel-config.yaml:/etc/otelcol-contrib/config.yaml
+    depends_on:
+      - loki
+      - tempo
     networks:
       - demok-docker
 
   grafana:
-    image: grafana/grafana:11.3.0-security-01
+    image: grafana/grafana:12.3
     ports:
       - 3000:3000
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_AUTH_ANONYMOUS_ENABLED=true
     volumes:
-      - ./grafana:/etc/grafana/provisioning/datasources
+      - ./grafana-datasource.yaml:/etc/grafana/provisioning/datasources/grafana-datasource.yml
+    depends_on:
+      - tempo
+      - loki
+      - prometheus
     networks:
       - demok-docker
 
   loki:
-    image: grafana/loki:3.4.3
+    image: grafana/loki:3.6.5
     ports:
       - 3100:3100
     volumes:
-      - ./loki/loki-config.yml:/etc/loki/loki-config.yaml
+      - ./loki.yaml:/etc/loki/loki-config.yaml
     networks:
       - demok-docker
 
   tempo:
-    image: grafana/tempo:2.8.0
+    image: grafana/tempo:2.10.0
     command: [ "-config.file=/etc/tempo.yaml" ]
     ports:
       - "3200"
       - "4317"
     volumes:
-      - ./tempo/tempo.yaml:/etc/tempo.yaml
+      - ./tempo.yaml:/etc/tempo.yaml
+    networks:
+      - demok-docker
+
+  prometheus:
+    image: prom/prometheus:v3.5.1
+    container_name: prometheus
+    command: [ "--config.file=/etc/prometheus/prometheus.yaml" ]
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yaml
+    ports:
+      - "9090:9090"
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
     networks:
       - demok-docker
 
